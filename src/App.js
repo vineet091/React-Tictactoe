@@ -4,9 +4,9 @@ import { useState } from "react";
 import "./styles.css";
 
 const Board = [
-  { row: 1, col: [1, 2, 3] },
-  { row: 2, col: [4, 5, 6] },
-  { row: 3, col: [7, 8, 9] }
+  { row: 0, col: [0, 1, 2] },
+  { row: 1, col: [0, 1, 2] },
+  { row: 2, col: [0, 1, 2] }
 ];
 const PLAYERS = {
   A: "X",
@@ -15,95 +15,126 @@ const PLAYERS = {
 
 export default function App() {
   const [activeUser, setActiveUser] = useState("A");
-  const [appState, setAppState] = useState(new Array(9));
+  const [gameState, setGameState] = useState(0);
+  const [appState, setAppState] = useState([...Array(3)].map((x) => Array(3)));
 
   const switchUser = () => {
     var nextUser = activeUser === "A" ? "B" : "A";
     setActiveUser(nextUser);
   };
+  const validateGame = (row, col) => {
+    var isRowDone = true,
+      isColDone = true,
+      isDaigDone = true,
+      isRevDaigDone = true;
+    var move = PLAYERS[activeUser];
+    for (var i = 0; i < 3; i++) {
+      if (appState[row][i] !== move) {
+        isRowDone = false;
+      }
+      console.log("appState[i][col]", appState[i][col]);
+      if (appState[i][col] !== move) {
+        isColDone = false;
+      }
+      if (appState[i][i] !== move) {
+        isDaigDone = false;
+      }
+      if (appState[i][Board.length - 1 - i] !== move) {
+        isRevDaigDone = false;
+      }
+    }
+    console.log(isColDone, isRowDone);
+    if (isRowDone || isColDone || isDaigDone || isRevDaigDone) {
+      return true;
+    }
+    return false;
+  };
 
-  const validateGame = (col, move) => {
-    switch (col) {
-      case 1: {
-        if (appState[2] === move && appState[3] === move) {
+  // simple way to check game
+  const validateGame1 = (row, col) => {
+    var move = PLAYERS[activeUser];
+    var value = `${row}${col}`;
+    switch (value) {
+      case "00": {
+        if (appState[0][1] === move && appState[0][2] === move) {
           return true;
-        } else if (appState[5] === move && appState[9] === move) {
+        } else if (appState[1][1] === move && appState[2][2] === move) {
           return true;
-        } else if (appState[4] === move && appState[7] === move) {
-          return true;
-        }
-        return false;
-      }
-      case 2: {
-        if (appState[1] === move && appState[3] === move) {
-          return true;
-        } else if (appState[5] === move && appState[8] === move) {
+        } else if (appState[1][0] === move && appState[2][0] === move) {
           return true;
         }
         return false;
       }
-      case 3: {
-        if (appState[1] === move && appState[2] === move) {
+      case "01": {
+        if (appState[0][1] === move && appState[0][2] === move) {
           return true;
-        } else if (appState[5] === move && appState[7] === move) {
-          return true;
-        } else if (appState[6] === move && appState[9] === move) {
+        } else if (appState[1][2] === move && appState[2][1] === move) {
           return true;
         }
         return false;
       }
-      case 4: {
-        if (appState[1] === move && appState[7] === move) {
+      case "02": {
+        if (appState[0][1] === move && appState[0][2] === move) {
           return true;
-        } else if (appState[5] === move && appState[6] === move) {
+        } else if (appState[1][1] === move && appState[2][0] === move) {
           return true;
-        }
-        return false;
-      }
-      case 5: {
-        if (appState[1] === move && appState[9] === move) {
-          return true;
-        } else if (appState[4] === move && appState[6] === move) {
-          return true;
-        } else if (appState[2] === move && appState[8] === move) {
-          return true;
-        } else if (appState[3] === move && appState[7] === move) {
+        } else if (appState[1][2] === move && appState[2][2] === move) {
           return true;
         }
         return false;
       }
-      case 6: {
-        if (appState[3] === move && appState[9] === move) {
+      case "10": {
+        if (appState[0][1] === move && appState[2][0] === move) {
           return true;
-        } else if (appState[4] === move && appState[5] === move) {
-          return true;
-        }
-        return false;
-      }
-      case 7: {
-        if (appState[1] === move && appState[4] === move) {
-          return true;
-        } else if (appState[3] === move && appState[5] === move) {
-          return true;
-        } else if (appState[8] === move && appState[9] === move) {
+        } else if (appState[1][1] === move && appState[1][2] === move) {
           return true;
         }
         return false;
       }
-      case 8: {
-        if (appState[2] === move && appState[5] === move) {
+      case "11": {
+        if (appState[0][1] === move && appState[2][2] === move) {
           return true;
-        } else if (appState[7] === move && appState[9] === move) {
+        } else if (appState[1][0] === move && appState[1][2] === move) {
+          return true;
+        } else if (appState[0][1] === move && appState[2][1] === move) {
+          return true;
+        } else if (appState[0][2] === move && appState[2][0] === move) {
           return true;
         }
         return false;
       }
-      case 9: {
-        if (appState[1] === move && appState[5] === move) {
+      case "12": {
+        if (appState[0][2] === move && appState[2][2] === move) {
           return true;
-        } else if (appState[3] === move && appState[6] === move) {
+        } else if (appState[0][1] === move && appState[1][1] === move) {
           return true;
-        } else if (appState[7] === move && appState[8] === move) {
+        }
+        return false;
+      }
+      case "20": {
+        if (appState[0][0] === move && appState[1][0] === move) {
+          return true;
+        } else if (appState[0][2] === move && appState[1][1] === move) {
+          return true;
+        } else if (appState[2][1] === move && appState[2][2] === move) {
+          return true;
+        }
+        return false;
+      }
+      case "21": {
+        if (appState[0][1] === move && appState[1][1] === move) {
+          return true;
+        } else if (appState[2][0] === move && appState[2][2] === move) {
+          return true;
+        }
+        return false;
+      }
+      case "22": {
+        if (appState[0][0] === move && appState[1][1] === move) {
+          return true;
+        } else if (appState[0][2] === move && appState[1][2] === move) {
+          return true;
+        } else if (appState[2][0] === move && appState[2][1] === move) {
           return true;
         }
         return false;
@@ -114,27 +145,33 @@ export default function App() {
     }
   };
 
-  const validateMove = (col) => {
-    if (appState[col]) {
+  const validateMove = (row, col) => {
+    if (gameState) {
+      alert("Game Over");
+      return;
+    }
+    if (appState[row][col]) {
       alert(new Error("Wrong Move"));
       return;
     } else {
-      appState[col] = PLAYERS[activeUser];
+      appState[row][col] = PLAYERS[activeUser];
     }
     setAppState(appState);
-    const isFinish = validateGame(col, PLAYERS[activeUser]);
-    if (isFinish) {
-      alert(`Game over ${activeUser} won`);
-    }
-    switchUser();
+    setTimeout(() => {
+      const isFinish = validateGame(row, col);
+      if (isFinish) {
+        setGameState(1);
+        alert(`Game over ${activeUser} won`);
+      }
+      switchUser();
+    }, 100);
   };
-
   return (
     <table className="App">
       {Board.map((rowData, i) => {
         return (
           <Row
-            index={`row_${i}`}
+            index={`row_${i + 1}`}
             rowData={rowData}
             validateMove={validateMove}
             appState={appState}
@@ -150,9 +187,10 @@ const Row = ({ rowData, validateMove, appState }) => {
   for (var j = 0; j < rowData.col.length; j++) {
     colData.push(
       <Col
-        index={`col_${rowData.row}_${j}`}
+        row={rowData.row}
+        index={`col_${rowData.row}_${j + 1}`}
         col={rowData.col[j]}
-        value={appState[rowData.col[j]]}
+        value={appState[rowData.row][rowData.col[j]]}
         validateMove={validateMove}
       />
     );
@@ -160,9 +198,9 @@ const Row = ({ rowData, validateMove, appState }) => {
   return <tr index={rowData.row}>{colData}</tr>;
 };
 
-const Col = ({ col, value, validateMove }) => {
+const Col = ({ row, col, value, validateMove }) => {
   return (
-    <td col={col} onClick={() => validateMove(col)}>
+    <td col={col} row={row} onClick={() => validateMove(row, col)}>
       {value}
     </td>
   );
