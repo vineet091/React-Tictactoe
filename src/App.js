@@ -157,14 +157,14 @@ export default function App() {
       appState[row][col] = PLAYERS[activeUser];
     }
     setAppState(appState);
-    setTimeout(() => {
-      const isFinish = validateGame(row, col);
-      if (isFinish) {
-        setGameState(1);
+    const isFinish = validateGame(row, col);
+    if (isFinish) {
+      setGameState(1);
+      setTimeout(() => {
         alert(`Game over ${activeUser} won`);
-      }
-      switchUser();
-    }, 100);
+      }, 100);
+    }
+    switchUser();
   };
   return (
     <table className="App">
