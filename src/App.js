@@ -3,11 +3,6 @@ import "./styles.css";
 import { useState } from "react";
 import "./styles.css";
 
-const Board = [
-  { row: 0, col: [0, 1, 2] },
-  { row: 1, col: [0, 1, 2] },
-  { row: 2, col: [0, 1, 2] }
-];
 const PLAYERS = {
   A: "X",
   B: "0"
@@ -39,7 +34,7 @@ export default function App() {
       if (appState[i][i] !== move) {
         isDaigDone = false;
       }
-      if (appState[i][Board.length - 1 - i] !== move) {
+      if (appState[i][appState.length - 1 - i] !== move) {
         isRevDaigDone = false;
       }
     }
@@ -166,13 +161,15 @@ export default function App() {
     }
     switchUser();
   };
+  console.log(appState);
   return (
     <table className="App">
-      {Board.map((rowData, i) => {
+      {appState.map((rowData, i) => {
         return (
           <Row
             index={`row_${i + 1}`}
             rowData={rowData}
+            row={i}
             validateMove={validateMove}
             appState={appState}
           />
@@ -182,20 +179,20 @@ export default function App() {
   );
 }
 
-const Row = ({ rowData, validateMove, appState }) => {
+const Row = ({ rowData, row, validateMove, appState }) => {
   var colData = [];
-  for (var j = 0; j < rowData.col.length; j++) {
+  for (var j = 0; j < rowData.length; j++) {
     colData.push(
       <Col
-        row={rowData.row}
-        index={`col_${rowData.row}_${j + 1}`}
-        col={rowData.col[j]}
-        value={appState[rowData.row][rowData.col[j]]}
+        row={row}
+        index={`col_${row}_${j + 1}`}
+        col={j}
+        value={appState[row][j]}
         validateMove={validateMove}
       />
     );
   }
-  return <tr index={rowData.row}>{colData}</tr>;
+  return <tr index={row}>{colData}</tr>;
 };
 
 const Col = ({ row, col, value, validateMove }) => {
